@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ดอกไม้สีฟ้าและข้อความน่ารัก</title>
+
+  <!-- ฟอนต์ Itim -->
+  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      margin: 0;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      height: 100vh;
+      font-family: 'Itim', cursive, sans-serif;
+      overflow: hidden;
+      transition: background 1s ease;
+    }
+
+    .daisy {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .center-layer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      box-shadow: 0 0 20px rgba(131, 193, 235, 0.6);
+      animation: centerIn 0.6s ease forwards;
+      border: 2px solid #87c1eb;
+    }
+
+    .center-layer.layer1 {
+      width: 90px;
+      height: 90px;
+      background: radial-gradient(circle at center, #a3d0f7 40%, #78b8f2 70%, #4f95d1 100%);
+      z-index: 13;
+    }
+    .center-layer.layer2 {
+      width: 75px;
+      height: 75px;
+      background: radial-gradient(circle at center, #78b8f2 40%, #4f95d1 70%, #3e7ab2 100%);
+      filter: brightness(0.9);
+      transform: translate(-50%, -50%) scale(0) rotate(15deg);
+      z-index: 12;
+    }
+    .center-layer.layer3 {
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at center, #4f95d1 40%, #3e7ab2 70%, #2e5c8f 100%);
+      filter: brightness(0.8);
+      transform: translate(-50%, -50%) scale(0) rotate(-10deg);
+      z-index: 11;
+    }
+
+    .petal {
+      position: absolute;
+      width: 50px;
+      height: 90px;
+      background: #3b5998;
+      border-radius: 50% / 100%;
+      box-shadow: 0 2px 10px rgba(59, 89, 152, 0.7);
+      top: 50%;
+      left: 50%;
+      transform-origin: 50% 100%;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.05));
+      opacity: 0;
+      animation-fill-mode: forwards;
+      z-index: 5;
+      transform: translate(-50%, -100%) rotate(var(--rotate)) scale(1);
+      border: 1.5px solid #2f4470;
+    }
+
+    .petal:nth-child(4)  { animation: petalIn 0.5s ease forwards; animation-delay: 0.7s; }
+    .petal:nth-child(5)  { animation: petalIn 0.5s ease forwards; animation-delay: 0.85s; }
+    .petal:nth-child(6)  { animation: petalIn 0.5s ease forwards; animation-delay: 1.0s; }
+    .petal:nth-child(7)  { animation: petalIn 0.5s ease forwards; animation-delay: 1.15s; }
+    .petal:nth-child(8)  { animation: petalIn 0.5s ease forwards; animation-delay: 1.3s; }
+    .petal:nth-child(9)  { animation: petalIn 0.5s ease forwards; animation-delay: 1.45s; }
+    .petal:nth-child(10) { animation: petalIn 0.5s ease forwards; animation-delay: 1.6s; }
+    .petal:nth-child(11) { animation: petalIn 0.5s ease forwards; animation-delay: 1.75s; }
+    .petal:nth-child(12) { animation: petalIn 0.5s ease forwards; animation-delay: 1.9s; }
+    .petal:nth-child(13) { animation: petalIn 0.5s ease forwards; animation-delay: 2.05s; }
+    .petal:nth-child(14) { animation: petalIn 0.5s ease forwards; animation-delay: 2.2s; }
+    .petal:nth-child(15) { animation: petalIn 0.5s ease forwards; animation-delay: 2.35s; }
+
+    .ripple {
+      position: fixed;
+      border-radius: 50%;
+      background-color: #4a90e2;
+      opacity: 0.5;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0);
+      animation: rippleAnim 0.8s ease forwards;
+      z-index: 5;
+    }
+
+    #message {
+      font-size: 22px;
+      color: #3b5998;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: .15em solid #3b5998;
+      width: 0;
+      animation: typing 3s steps(60, end) forwards, blink-caret 0.75s step-end infinite;
+      max-width: 100%;
+      text-align: center;
+      align-self: center;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s linear 0.3s, opacity 0.3s;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+      transition-delay: 0s;
+    }
+
+    .modal {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      text-align: center;
+      font-size: 22px;
+      color: #333;
+      max-width: 320px;
+      width: 90%;
+    }
+
+    .modal button {
+      margin-top: 20px;
+      font-size: 18px;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      padding: 10px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+
+    @keyframes centerIn {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+        box-shadow: 0 0 0 rgba(131, 193, 235, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 20px rgba(131, 193, 235, 0.6);
+      }
+    }
+
+    @keyframes petalIn {
+      0% {
+        opacity: 0;
+        transform: translate(calc(-50% - 80px), -100%) rotate(var(--rotate)) scale(1);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -100%) rotate(var(--rotate)) scale(1);
+      }
+    }
+
+    @keyframes rippleAnim {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(10);
+        opacity: 0;
+      }
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+      50% { border-color: transparent; }
+    }
+  </style>
+</head>
+<body>
+  <div class="daisy">
+    <div class="center-layer layer1"></div>
+    <div class="center-layer layer2"></div>
+    <div class="center-layer layer3"></div>
+
+    <!-- กลีบดอก 12 กลีบ -->
+    <div class="petal" style="--rotate: 0deg;"></div>
+    <div class="petal" style="--rotate: 30deg;"></div>
+    <div class="petal" style="--rotate: 60deg;"></div>
+    <div class="petal" style="--rotate: 90deg;"></div>
+    <div class="petal" style="--rotate: 120deg;"></div>
+    <div class="petal" style="--rotate: 150deg;"></div>
+    <div class="petal" style="--rotate: 180deg;"></div>
+    <div class="petal" style="--rotate: 210deg;"></div>
+    <div class="petal" style="--rotate: 240deg;"></div>
+    <div class="petal" style="--rotate: 270deg;"></div>
+    <div class="petal" style="--rotate: 300deg;"></div>
+    <div class="petal" style="--rotate: 330deg;"></div>
+  </div>
+
+  <div id="message" aria-live="polite" role="alert"></div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <p>มีเพลงมาส่ง</p>
+      <button id="closeModal">ตกลง</button>
+    </div>
+  </div>
+
+  <script>
+    const daisy = document.querySelector('.daisy');
+    const body = document.body;
+    const message = document.getElementById('message');
+    const modal = document.getElementById('modal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const text = "ดอกไม้สําหรับคนน่ารักฮ่าๆ";
+    let timeoutId = null;
+    let modalTimeoutId = null;
+
+    daisy.addEventListener('click', e => {
+      // ripple effect
+      const ripple = document.createElement('div');
+      ripple.classList.add('ripple');
+      ripple.style.left = e.clientX + 'px';
+      ripple.style.top = e.clientY + 'px';
+      document.body.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove());
+
+      // change background
+      body.style.background = '#a6c8ff';
+
+      // reset text
+      message.textContent = '';
+      message.style.width = '0';
+      message.style.borderRight = '.15em solid #3b5998';
+
+      // typing animation
+      let index = 0;
+      function type() {
+        if (index < text.length) {
+          message.textContent += text.charAt(index);
+          index++;
+          timeoutId = setTimeout(type, 50);
+        } else {
+          message.style.borderRight = 'none';
+        }
+      }
+      type();
+
+      // clear previous modal timeout if any
+      if(modalTimeoutId) clearTimeout(modalTimeoutId);
+
+      // show modal after 5 seconds
+      modalTimeoutId = setTimeout(() => {
+        modal.classList.add('active');
+
+        // auto hide modal after another 5 seconds
+        modalTimeoutId = setTimeout(() => {
+          modal.classList.remove('active');
+        }, 5000);
+
+      }, 5000);
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      if(modalTimeoutId) clearTimeout(modalTimeoutId);
+      window.location.href = "https://open.spotify.com/track/3mX2GKPSW38pRpdmC9tdvY?si=642d7adbc0fc4110";
+    });
+  </script>
+</body>
+</html>
